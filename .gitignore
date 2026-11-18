@@ -1,0 +1,4 @@
+*.grib2
+tmp/
+site/
+__pycache__/
