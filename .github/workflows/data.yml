@@ -23,7 +23,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
-      HAS_COPERNICUS: ${{ secrets.COPERNICUS_USER != '' }}
       BASE: https://israelelharar.github.io/fish-data
     steps:
       - uses: actions/checkout@v4
@@ -31,6 +30,11 @@ jobs:
         with:
           node-version: "24"
       - run: mkdir -p site && cp data/rules.json site/rules.json
+      - name: Is Copernicus configured?
+        id: cop
+        env:
+          COP_USER: ${{ secrets.COPERNICUS_USER }}
+        run: if [ -n "$COP_USER" ]; then echo "on=true" >> "$GITHUB_OUTPUT"; else echo "on=false" >> "$GITHUB_OUTPUT"; fi
       - name: Accuracy check (forecast vs IMS stations)
         continue-on-error: true
         run: node scripts/verify-accuracy.mjs site/accuracy.json "$BASE/accuracy.json"
@@ -44,11 +48,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh issue create --repo "${{ github.repository }}" --title "מקור רשמי השתנה: לבדוק את החוקים" --body-file site/changes.md
       - uses: actions/setup-python@v5
-        if: env.HAS_COPERNICUS == 'true'
+        if: steps.cop.outputs.on == 'true'
         with:
           python-version: "3.12"
       - name: Sea state (Copernicus Marine)
-        if: env.HAS_COPERNICUS == 'true'
+        if: steps.cop.outputs.on == 'true'
         continue-on-error: true
         run: |
           pip install "copernicusmarine==2.*" xarray numpy
@@ -56,7 +60,8 @@ jobs:
         env:
           COPERNICUSMARINE_SERVICE_USERNAME: ${{ secrets.COPERNICUS_USER }}
           COPERNICUSMARINE_SERVICE_PASSWORD: ${{ secrets.COPERNICUS_PASSWORD }}
-      - run: echo "{\"updated\":\"$(date -u +%FT%TZ)\"}" > site/health.json
+      - name: Health file
+        run: node -e "require('fs').writeFileSync('site/health.json', JSON.stringify({ updated: new Date().toISOString() }))"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
