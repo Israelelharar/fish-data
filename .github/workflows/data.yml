@@ -46,7 +46,8 @@ jobs:
         if: steps.sources.outcome == 'failure'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh issue create --repo "${{ github.repository }}" --title "מקור רשמי השתנה: לבדוק את החוקים" --body-file site/changes.md
+        run: |
+          gh issue create --repo "${{ github.repository }}" --title "מקור רשמי השתנה - לבדוק את החוקים" --body-file site/changes.md
       - uses: actions/setup-python@v5
         if: steps.cop.outputs.on == 'true'
         with:
