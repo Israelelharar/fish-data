@@ -52,6 +52,23 @@ def clean(v):
     return None if v is None or (isinstance(v, float) and math.isnan(v)) else round(float(v), 2)
 
 
+def nearest_sea(ds, var, lat, lon, max_deg=0.32):
+    first = ds[var].isel(time=0).values
+    if first.ndim > 2:
+        first = first.reshape(first.shape[-2:])
+    valid = ~np.isnan(first)
+    if not valid.any():
+        return None
+    la = ds["latitude"].values[:, None]
+    lo = ds["longitude"].values[None, :]
+    d2 = (la - lat) ** 2 + ((lo - lon) * math.cos(math.radians(lat))) ** 2
+    d2 = np.where(valid, d2, np.inf)
+    i, j = np.unravel_index(np.argmin(d2), d2.shape)
+    if not np.isfinite(d2[i, j]) or d2[i, j] > max_deg ** 2:
+        return None
+    return ds.isel(latitude=int(i), longitude=int(j))
+
+
 def open_first(candidates, variables, box):
     """Open the first dataset ID that exists; log and skip (don't crash) if none does."""
     for dataset_id in candidates:
@@ -76,8 +93,8 @@ def main(out_path: str):
             continue
         lats = [p["lat"] for p in group]
         lons = [p["lon"] for p in group]
-        box = dict(minimum_latitude=min(lats) - 0.1, maximum_latitude=max(lats) + 0.1,
-                   minimum_longitude=min(lons) - 0.1, maximum_longitude=max(lons) + 0.1,
+        box = dict(minimum_latitude=min(lats) - 0.3, maximum_latitude=max(lats) + 0.3,
+                   minimum_longitude=min(lons) - 0.3, maximum_longitude=max(lons) + 0.3,
                    start_datetime=start.isoformat(), end_datetime=end.isoformat())
         for kind, (candidates, variables) in sets.items():
             ds = open_first(candidates, variables, box)
@@ -87,14 +104,11 @@ def main(out_path: str):
                 ds = ds.isel(depth=0)
             times = [np.datetime_as_string(t, unit="m") + "Z" for t in ds["time"].values]
             for p in group:
-                # Nearest *sea* cell: try the point, then widen until a non-NaN value appears.
-                cell = None
-                for tol in (0.05, 0.1, 0.2):
-                    near = ds.sel(latitude=p["lat"], longitude=p["lon"], method="nearest", tolerance=tol)
-                    if not np.isnan(near[variables[0]].values).all():
-                        cell = near
-                        break
+                # Nearest *sea* cell (coastal points often fall on land-masked cells, e.g. the
+                # narrow tip of the Gulf of Aqaba): search all cells that have data, within ~35 km.
+                cell = nearest_sea(ds, variables[0], p["lat"], p["lon"])
                 if cell is None:
+                    print(f"no sea cell near {p['id']}")
                     continue
                 entry = result["points"].setdefault(p["id"], {})
                 entry[f"t_{kind}"] = times
