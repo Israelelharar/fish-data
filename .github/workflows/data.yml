@@ -34,7 +34,8 @@ jobs:
         id: cop
         env:
           COP_USER: ${{ secrets.COPERNICUS_USER }}
-        run: if [ -n "$COP_USER" ]; then echo "on=true" >> "$GITHUB_OUTPUT"; else echo "on=false" >> "$GITHUB_OUTPUT"; fi
+          COP_PASS: ${{ secrets.COPERNICUS_PASSWORD }}
+        run: if [ -n "$COP_USER" ] && [ -n "$COP_PASS" ]; then echo "on=true" >> "$GITHUB_OUTPUT"; else echo "on=false" >> "$GITHUB_OUTPUT"; fi
       - name: Accuracy check (forecast vs IMS stations)
         continue-on-error: true
         run: node scripts/verify-accuracy.mjs site/accuracy.json "$BASE/accuracy.json"
