@@ -44,7 +44,7 @@ DATASETS = {
         "cur": (["cmems_mod_med_phy-cur_anfc_4.2km-2D_PT1H-m"], ["uo", "vo"],
                 "MEDSEA_ANALYSISFORECAST_PHY_006_013", r"cmems_mod_med_phy-cur_anfc_[\d.]+km-2D_PT1H-m"),
 
-        # Bottom potential temperature (hourly 2D temperature dataset). Extra: failure only drops it.
+        # Bottom potential temperature. Extra: failure only drops it.
         # (only the 3D hourly dataset carries bottomT; we request just that 2D variable). Verified in STAC 2026-11-18.
         "bott": (["cmems_mod_med_phy-temp_anfc_4.2km-3D_PT1H-m", "cmems_mod_med_phy-tem_anfc_4.2km-3D_PT1H-m"], ["bottomT"],
                  "MEDSEA_ANALYSISFORECAST_PHY_006_013", r"cmems_mod_med_phy-tem\w*_anfc_[\d.]+km-3D_PT1H-m"),
