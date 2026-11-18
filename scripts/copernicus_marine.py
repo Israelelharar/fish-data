@@ -24,16 +24,20 @@ import numpy as np
 ROOT = Path(__file__).resolve().parent.parent
 DAYS = 7
 
+WAVE_VARS = ["VHM0", "VMDR", "VTM10", "VHM0_SW1", "VTM01_SW1"]
+# Each kind lists candidate dataset IDs, newest naming first. Copernicus renames datasets
+# between catalogue releases (e.g. "phy-tem" -> "phy-temp" in 2026-11), so we try each in turn.
+# IDs verified in the STAC catalogue on 2026-11-18. Surface-only (2D) datasets: no depth needed.
 DATASETS = {
     # Mediterranean (4.2 km, hourly). Does NOT cover the Red Sea.
     "med": {
-        "waves": ("cmems_mod_med_wav_anfc_4.2km_PT1H-i", ["VHM0", "VMDR", "VTM10", "VHM0_SW1", "VTM01_SW1"]),
-        "sst": ("cmems_mod_med_phy-tem_anfc_4.2km_PT1H-m", ["thetao"]),
+        "waves": (["cmems_mod_med_wav_anfc_4.2km_PT1H-i"], WAVE_VARS),
+        "sst": (["cmems_mod_med_phy-temp_anfc_4.2km-2D_PT1H-m", "cmems_mod_med_phy-tem_anfc_4.2km-2D_PT1H-m"], ["thetao"]),
     },
-    # Global (1/12°) for Eilat / Gulf of Aqaba.
+    # Global (1/12 deg) for Eilat / Gulf of Aqaba.
     "eilat": {
-        "waves": ("cmems_mod_glo_wav_anfc_0.083deg_PT3H-i", ["VHM0", "VMDR", "VTM10", "VHM0_SW1", "VTM01_SW1"]),
-        "sst": ("cmems_mod_glo_phy-thetao_anfc_0.083deg_PT1H-m", ["thetao"]),
+        "waves": (["cmems_mod_glo_wav_anfc_0.083deg_PT3H-i"], WAVE_VARS),
+        "sst": (["cmems_mod_glo_phy_anfc_0.083deg_PT1H-m"], ["thetao"]),
     },
 }
 OUT_KEYS = {"VHM0": "wave", "VMDR": "waveDir", "VTM10": "wavePer", "VHM0_SW1": "swell", "VTM01_SW1": "swellPer", "thetao": "sst"}
@@ -46,6 +50,18 @@ def beaches():
 
 def clean(v):
     return None if v is None or (isinstance(v, float) and math.isnan(v)) else round(float(v), 2)
+
+
+def open_first(candidates, variables, box):
+    """Open the first dataset ID that exists; log and skip (don't crash) if none does."""
+    for dataset_id in candidates:
+        try:
+            ds = cm.open_dataset(dataset_id=dataset_id, variables=variables, **box)
+            print(f"ok: {dataset_id}")
+            return ds
+        except Exception as e:  # noqa: BLE001 - catalogue renames, outages
+            print(f"skip {dataset_id}: {type(e).__name__}: {str(e)[:200]}")
+    return None
 
 
 def main(out_path: str):
@@ -63,9 +79,10 @@ def main(out_path: str):
         box = dict(minimum_latitude=min(lats) - 0.1, maximum_latitude=max(lats) + 0.1,
                    minimum_longitude=min(lons) - 0.1, maximum_longitude=max(lons) + 0.1,
                    start_datetime=start.isoformat(), end_datetime=end.isoformat())
-        for kind, (dataset_id, variables) in sets.items():
-            extra = {"minimum_depth": 0, "maximum_depth": 1.1} if kind == "sst" else {}
-            ds = cm.open_dataset(dataset_id=dataset_id, variables=variables, **box, **extra)
+        for kind, (candidates, variables) in sets.items():
+            ds = open_first(candidates, variables, box)
+            if ds is None:
+                continue
             if "depth" in ds.dims:
                 ds = ds.isel(depth=0)
             times = [np.datetime_as_string(t, unit="m") + "Z" for t in ds["time"].values]
@@ -93,6 +110,8 @@ def main(out_path: str):
             lookup = dict(zip(t_sst, e["sst"]))
             e["sst"] = [lookup.get(t) for t in e["t"]]
 
+    if not result["points"]:
+        sys.exit("no marine data retrieved")
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     Path(out_path).write_text(json.dumps(result, separators=(",", ":")), encoding="utf8")
     print(f"wrote {out_path}: {len(result['points'])} beaches")
