@@ -15,6 +15,8 @@ import json
 import math
 import re
 import sys
+import time
+import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -31,13 +33,17 @@ WAVE_VARS = ["VHM0", "VMDR", "VTM10", "VHM0_SW1", "VTM01_SW1"]
 DATASETS = {
     # Mediterranean (4.2 km, hourly). Does NOT cover the Red Sea.
     "med": {
-        "waves": (["cmems_mod_med_wav_anfc_4.2km_PT1H-i"], WAVE_VARS),
-        "sst": (["cmems_mod_med_phy-temp_anfc_4.2km-2D_PT1H-m", "cmems_mod_med_phy-tem_anfc_4.2km-2D_PT1H-m"], ["thetao"]),
+        "waves": (["cmems_mod_med_wav_anfc_4.2km_PT1H-i"], WAVE_VARS,
+                  "MEDSEA_ANALYSISFORECAST_WAV_006_017", r"cmems_mod_med_wav_anfc_[\d.]+km_PT1H-i"),
+        "sst": (["cmems_mod_med_phy-temp_anfc_4.2km-2D_PT1H-m", "cmems_mod_med_phy-tem_anfc_4.2km-2D_PT1H-m"], ["thetao"],
+                "MEDSEA_ANALYSISFORECAST_PHY_006_013", r"cmems_mod_med_phy-tem\w*_anfc_[\d.]+km-2D_PT1H-m"),
     },
     # Global (1/12 deg) for Eilat / Gulf of Aqaba.
     "eilat": {
-        "waves": (["cmems_mod_glo_wav_anfc_0.083deg_PT3H-i"], WAVE_VARS),
-        "sst": (["cmems_mod_glo_phy_anfc_0.083deg_PT1H-m"], ["thetao"]),
+        "waves": (["cmems_mod_glo_wav_anfc_0.083deg_PT3H-i"], WAVE_VARS,
+                  "GLOBAL_ANALYSISFORECAST_WAV_001_027", r"cmems_mod_glo_wav_anfc_[\d.]+deg_PT3H-i"),
+        "sst": (["cmems_mod_glo_phy_anfc_0.083deg_PT1H-m"], ["thetao"],
+                "GLOBAL_ANALYSISFORECAST_PHY_001_024", r"cmems_mod_glo_phy\w*_anfc_[\d.]+deg_PT1H-m"),
     },
 }
 OUT_KEYS = {"VHM0": "wave", "VMDR": "waveDir", "VTM10": "wavePer", "VHM0_SW1": "swell", "VTM01_SW1": "swellPer", "thetao": "sst"}
@@ -69,15 +75,53 @@ def nearest_sea(ds, var, lat, lon, max_deg=0.32):
     return ds.isel(latitude=int(i), longitude=int(j))
 
 
-def open_first(candidates, variables, box):
-    """Open the first dataset ID that exists; log and skip (don't crash) if none does."""
-    for dataset_id in candidates:
-        try:
-            ds = cm.open_dataset(dataset_id=dataset_id, variables=variables, **box)
-            print(f"ok: {dataset_id}")
-            return ds
-        except Exception as e:  # noqa: BLE001 - catalogue renames, outages
-            print(f"skip {dataset_id}: {type(e).__name__}: {str(e)[:200]}")
+STAC = "https://stac.marine.copernicus.eu/metadata/{product}/product.stac.json"
+
+
+def discover(product, pattern):
+    """If Copernicus renamed a dataset again, find its new ID in the public STAC catalogue."""
+    try:
+        with urllib.request.urlopen(STAC.format(product=product), timeout=30) as r:
+            links = json.load(r).get("links", [])
+    except Exception as e:  # noqa: BLE001
+        print(f"catalogue lookup failed for {product}: {e}")
+        return []
+    found = {}
+    for link in links:
+        m = re.match(r"(.+)_(\d{6})/dataset\.stac\.json$", link.get("href", ""))
+        if m and re.fullmatch(pattern, m.group(1)):
+            found[m.group(1)] = max(found.get(m.group(1), ""), m.group(2))
+    ids = sorted(found, key=lambda k: found[k], reverse=True)
+    print(f"catalogue {product}: {ids}")
+    return ids
+
+
+def is_auth_error(e):
+    return "password" in type(e).__name__.lower() or "credential" in type(e).__name__.lower()
+
+
+def open_first(candidates, variables, box, product, pattern):
+    """Open the first dataset ID that works: known IDs first, then whatever the catalogue lists now.
+    Each ID gets 2 tries (transient outages). Wrong credentials stop everything at once."""
+    tried = []
+    for dataset_id in list(candidates) + ["*"]:
+        ids = discover(product, pattern) if dataset_id == "*" else [dataset_id]
+        for did in ids:
+            if did in tried:
+                continue
+            tried.append(did)
+            for attempt in range(2):
+                try:
+                    ds = cm.open_dataset(dataset_id=did, variables=variables, **box)
+                    print(f"ok: {did}")
+                    return ds
+                except Exception as e:  # noqa: BLE001 - catalogue renames, outages
+                    if is_auth_error(e):
+                        raise
+                    print(f"skip {did} (try {attempt + 1}): {type(e).__name__}: {str(e)[:200]}")
+                    if "NotFound" in type(e).__name__:
+                        break
+                    time.sleep(20)
     return None
 
 
@@ -96,8 +140,8 @@ def main(out_path: str):
         box = dict(minimum_latitude=min(lats) - 0.3, maximum_latitude=max(lats) + 0.3,
                    minimum_longitude=min(lons) - 0.3, maximum_longitude=max(lons) + 0.3,
                    start_datetime=start.isoformat(), end_datetime=end.isoformat())
-        for kind, (candidates, variables) in sets.items():
-            ds = open_first(candidates, variables, box)
+        for kind, (candidates, variables, product, pattern) in sets.items():
+            ds = open_first(candidates, variables, box, product, pattern)
             if ds is None:
                 continue
             if "depth" in ds.dims:
@@ -132,4 +176,9 @@ def main(out_path: str):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else "out/marine.json")
+    try:
+        main(sys.argv[1] if len(sys.argv) > 1 else "out/marine.json")
+    except BaseException as e:  # record why, for status.json / the alert issue
+        Path("tmp").mkdir(exist_ok=True)
+        Path("tmp/marine.err").write_text(f"{type(e).__name__}: {e}", encoding="utf8")
+        raise

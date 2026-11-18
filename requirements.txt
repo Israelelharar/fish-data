@@ -1,0 +1,6 @@
+# Pinned versions that were tested together (2026-11-18). Upgrade deliberately, not by accident.
+copernicusmarine==2.5.1
+xarray==2026.9.0
+numpy==2.5.5
+eccodes==2.50.1
+ecmwf-opendata==0.3.35

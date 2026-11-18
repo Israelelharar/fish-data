@@ -1,0 +1,247 @@
+[
+ {
+  "id": "rosh-hanikra",
+  "lat": 33.0925,
+  "lon": 35.1035
+ },
+ {
+  "id": "achziv",
+  "lat": 33.048,
+  "lon": 35.1
+ },
+ {
+  "id": "nahariya",
+  "lat": 33.009,
+  "lon": 35.088
+ },
+ {
+  "id": "shavei-zion",
+  "lat": 32.984,
+  "lon": 35.08
+ },
+ {
+  "id": "akko-walls",
+  "lat": 32.92,
+  "lon": 35.066
+ },
+ {
+  "id": "kiryat-yam",
+  "lat": 32.852,
+  "lon": 35.063
+ },
+ {
+  "id": "bat-galim",
+  "lat": 32.834,
+  "lon": 34.98
+ },
+ {
+  "id": "shikmona",
+  "lat": 32.827,
+  "lon": 34.956
+ },
+ {
+  "id": "dado",
+  "lat": 32.806,
+  "lon": 34.957
+ },
+ {
+  "id": "atlit",
+  "lat": 32.7,
+  "lon": 34.933
+ },
+ {
+  "id": "neve-yam",
+  "lat": 32.68,
+  "lon": 34.93
+ },
+ {
+  "id": "dor-habonim",
+  "lat": 32.638,
+  "lon": 34.922
+ },
+ {
+  "id": "nahsholim",
+  "lat": 32.618,
+  "lon": 34.916
+ },
+ {
+  "id": "jisr",
+  "lat": 32.537,
+  "lon": 34.901
+ },
+ {
+  "id": "caesarea-aqueduct",
+  "lat": 32.5165,
+  "lon": 34.8955
+ },
+ {
+  "id": "caesarea-port",
+  "lat": 32.502,
+  "lon": 34.891
+ },
+ {
+  "id": "hadera-olga",
+  "lat": 32.44,
+  "lon": 34.874
+ },
+ {
+  "id": "hadera-power",
+  "lat": 32.472,
+  "lon": 34.882
+ },
+ {
+  "id": "michmoret",
+  "lat": 32.405,
+  "lon": 34.869
+ },
+ {
+  "id": "beit-yanai",
+  "lat": 32.388,
+  "lon": 34.862
+ },
+ {
+  "id": "netanya",
+  "lat": 32.329,
+  "lon": 34.85
+ },
+ {
+  "id": "poleg",
+  "lat": 32.27,
+  "lon": 34.83
+ },
+ {
+  "id": "gaash",
+  "lat": 32.229,
+  "lon": 34.82
+ },
+ {
+  "id": "herzliya-sidna-ali",
+  "lat": 32.188,
+  "lon": 34.804
+ },
+ {
+  "id": "tlv-port",
+  "lat": 32.098,
+  "lon": 34.772
+ },
+ {
+  "id": "tlv-hilton",
+  "lat": 32.088,
+  "lon": 34.768
+ },
+ {
+  "id": "jaffa-port",
+  "lat": 32.053,
+  "lon": 34.75
+ },
+ {
+  "id": "bat-yam",
+  "lat": 32.02,
+  "lon": 34.74
+ },
+ {
+  "id": "rishon",
+  "lat": 31.985,
+  "lon": 34.733
+ },
+ {
+  "id": "palmachim",
+  "lat": 31.933,
+  "lon": 34.697
+ },
+ {
+  "id": "yavne-yam",
+  "lat": 31.92,
+  "lon": 34.693
+ },
+ {
+  "id": "ashdod-north",
+  "lat": 31.83,
+  "lon": 34.642
+ },
+ {
+  "id": "ashdod-power",
+  "lat": 31.846,
+  "lon": 34.652
+ },
+ {
+  "id": "ashdod-yod-alef",
+  "lat": 31.786,
+  "lon": 34.628
+ },
+ {
+  "id": "nitzanim",
+  "lat": 31.735,
+  "lon": 34.6
+ },
+ {
+  "id": "ashkelon-marina",
+  "lat": 31.683,
+  "lon": 34.556
+ },
+ {
+  "id": "ashkelon-np",
+  "lat": 31.665,
+  "lon": 34.545
+ },
+ {
+  "id": "ashkelon-rutenberg",
+  "lat": 31.628,
+  "lon": 34.528
+ },
+ {
+  "id": "shikma",
+  "lat": 31.6,
+  "lon": 34.51
+ },
+ {
+  "id": "zikim",
+  "lat": 31.607,
+  "lon": 34.52
+ },
+ {
+  "id": "eilat-north",
+  "lat": 29.552,
+  "lon": 34.958
+ },
+ {
+  "id": "eilat-katza",
+  "lat": 29.53,
+  "lon": 34.938
+ },
+ {
+  "id": "eilat-coral",
+  "lat": 29.508,
+  "lon": 34.92
+ },
+ {
+  "id": "tiberias",
+  "lat": 32.79,
+  "lon": 35.542
+ },
+ {
+  "id": "tzemach",
+  "lat": 32.705,
+  "lon": 35.585
+ },
+ {
+  "id": "ein-gev",
+  "lat": 32.784,
+  "lon": 35.64
+ },
+ {
+  "id": "kursi",
+  "lat": 32.825,
+  "lon": 35.65
+ },
+ {
+  "id": "ginosar",
+  "lat": 32.846,
+  "lon": 35.524
+ },
+ {
+  "id": "betiha",
+  "lat": 32.885,
+  "lon": 35.63
+ }
+]

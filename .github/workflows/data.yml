@@ -1,8 +1,14 @@
 # Public data for the "דייג חכם" app. Process once, serve to everyone (free: public repo + GitHub Pages).
 #   rules.json     fishing rules with dates (the app picks up new seasons without an update)
+#   gusts.json     wind gusts: DWD ICON-EU (primary) + ECMWF open data (backup / extension)
+#   marine.json    waves / sea temperature from Copernicus Marine
 #   accuracy.json  daily check: forecast vs. real IMS station measurements
 #   sources.json   watchdog over the official sources (opens an issue if one changes)
-#   marine.json    waves / sea temperature from Copernicus Marine (once COPERNICUS_* secrets are set)
+#   status.json    how every source did; alert issues open / close automatically
+#
+# Resilience: every run starts from the files that are live now, so a source that fails keeps its
+# last good file. Each source retries, runs isolated (one failure never blocks the others) and has
+# a time limit. keepalive.yml stops GitHub from switching this schedule off after 60 idle days.
 name: data
 on:
   schedule:
@@ -15,13 +21,14 @@ permissions:
   pages: write
   id-token: write
   issues: write
+  actions: write
 concurrency:
   group: data
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 45
     env:
       BASE: https://israelelharar.github.io/fish-data
     steps:
@@ -29,49 +36,106 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-      - run: mkdir -p site && cp data/rules.json site/rules.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Start from the live files (last good data)
+        run: node scripts/restore.mjs site
+      - run: cp data/rules.json site/rules.json && mkdir -p tmp
+      - name: Install Python packages (pinned)
+        run: |
+          for i in 1 2 3; do pip install -r requirements.txt && break; sleep 30; done
       - name: Is Copernicus configured?
         id: cop
         env:
           COP_USER: ${{ secrets.COPERNICUS_USER }}
           COP_PASS: ${{ secrets.COPERNICUS_PASSWORD }}
         run: if [ -n "$COP_USER" ] && [ -n "$COP_PASS" ]; then echo "on=true" >> "$GITHUB_OUTPUT"; else echo "on=false" >> "$GITHUB_OUTPUT"; fi
-      - name: Accuracy check (forecast vs IMS stations)
+
+      - name: Wind gusts (ICON-EU, backup ECMWF)
+        id: gusts
         continue-on-error: true
-        run: node scripts/verify-accuracy.mjs site/accuracy.json "$BASE/accuracy.json"
-      - name: Official sources watchdog
-        id: sources
-        continue-on-error: true
-        run: node scripts/check-sources.mjs site/sources.json "$BASE/sources.json"
-      - name: Open an issue if an official source changed
-        if: steps.sources.outcome == 'failure'
-        env:
-          GH_TOKEN: ${{ github.token }}
+        timeout-minutes: 15
         run: |
-          gh issue create --repo "${{ github.repository }}" --title "מקור רשמי השתנה - לבדוק את החוקים" --body-file site/changes.md
-      - uses: actions/setup-python@v5
-        if: steps.cop.outputs.on == 'true'
-        with:
-          python-version: "3.12"
+          for i in 1 2; do
+            python scripts/gusts.py tmp/gusts.json && mv tmp/gusts.json site/gusts.json && rm -f tmp/gusts.err && exit 0
+            echo "attempt $i failed"; sleep 60
+          done
+          exit 1
+
       - name: Sea state (Copernicus Marine)
+        id: marine
         if: steps.cop.outputs.on == 'true'
         continue-on-error: true
-        run: |
-          pip install "copernicusmarine==2.*" xarray numpy
-          python scripts/copernicus_marine.py site/marine.json
+        timeout-minutes: 15
         env:
           COPERNICUSMARINE_SERVICE_USERNAME: ${{ secrets.COPERNICUS_USER }}
           COPERNICUSMARINE_SERVICE_PASSWORD: ${{ secrets.COPERNICUS_PASSWORD }}
+        run: |
+          for i in 1 2; do
+            python scripts/copernicus_marine.py tmp/marine.json && mv tmp/marine.json site/marine.json && rm -f tmp/marine.err && exit 0
+            grep -qi password tmp/marine.err 2>/dev/null && exit 1  # wrong password: retrying won't help
+            echo "attempt $i failed"; sleep 60
+          done
+          exit 1
+
+      - name: Accuracy check (forecast vs IMS stations)
+        id: accuracy
+        continue-on-error: true
+        timeout-minutes: 10
+        run: node scripts/verify-accuracy.mjs tmp/accuracy.json "$BASE/accuracy.json" 2> >(tee tmp/accuracy.err >&2) && mv tmp/accuracy.json site/accuracy.json
+
+      - name: Official sources watchdog
+        id: sources
+        continue-on-error: true
+        timeout-minutes: 10
+        run: |
+          code=0; node scripts/check-sources.mjs tmp/sources.json "$BASE/sources.json" || code=$?
+          [ -f tmp/sources.json ] && mv tmp/sources.json site/sources.json
+          exit $code
+      - name: Open an issue if an official source changed
+        if: steps.sources.outcome == 'failure' && hashFiles('tmp/changes.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create --repo "${{ github.repository }}" --title "מקור רשמי השתנה - לבדוק את החוקים" --body-file tmp/changes.md
+
+      - name: Status file + alert issues (open after 6 h of failures, close on recovery)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OUT_GUSTS: ${{ steps.gusts.outcome }}
+          OUT_MARINE: ${{ steps.marine.outcome }}
+          OUT_ACCURACY: ${{ steps.accuracy.outcome }}
+          OUT_SOURCES: ${{ steps.sources.outcome }}
+        run: node scripts/status.mjs site/status.json
       - name: Health file
+        if: always()
         run: |
           node -e "require('fs').writeFileSync('site/health.json', JSON.stringify({ updated: new Date().toISOString() }))"
+      - name: Keep the keepalive schedule switched on
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/keepalive.yml/enable"
       - uses: actions/upload-pages-artifact@v3
+        if: always()
         with:
           path: site
   deploy:
     needs: build
+    if: always() && needs.build.result != 'cancelled'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     environment:
       name: github-pages
     steps:
-      - uses: actions/deploy-pages@v4
+      - name: Deploy (retry once)
+        id: d1
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+      - name: Deploy, second try
+        if: steps.d1.outcome == 'failure'
+        uses: actions/deploy-pages@v4
