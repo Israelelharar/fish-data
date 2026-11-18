@@ -1,5 +1,5 @@
 """
-Builds marine.json (waves, swell, sea temperature, 7 days, hourly) for every sea beach
+Builds marine.json (waves, swell, sea temperature, tide, currents, water stir; 7 days, hourly) for every sea beach
 from Copernicus Marine forecasts. Free for commercial use with the credit
 "E.U. Copernicus Marine Service Information".
 
@@ -26,10 +26,13 @@ import numpy as np
 ROOT = Path(__file__).resolve().parent.parent
 DAYS = 7
 
-WAVE_VARS = ["VHM0", "VMDR", "VTM10", "VHM0_SW1", "VTM01_SW1"]
+WAVE_VARS = ["VHM0", "VMDR", "VTM10", "VHM0_SW1", "VTM01_SW1", "VMDR_SW1"]
 # Each kind lists candidate dataset IDs, newest naming first. Copernicus renames datasets
 # between catalogue releases (e.g. "phy-tem" -> "phy-temp" in 2026-11), so we try each in turn.
 # IDs verified in the STAC catalogue on 2026-11-18. Surface-only (2D) datasets: no depth needed.
+# "waves" and "sst" are essential; "tide" and "cur" are extras (a failure there only drops them).
+TIDE = (["cmems_mod_glo_phy_anfc_merged-sl_PT1H-i"], ["ocean_tide"],
+        "GLOBAL_ANALYSISFORECAST_PHY_001_024", r"cmems_mod_glo_phy_anfc_merged-sl_PT1H-i")
 DATASETS = {
     # Mediterranean (4.2 km, hourly). Does NOT cover the Red Sea.
     "med": {
@@ -37,6 +40,9 @@ DATASETS = {
                   "MEDSEA_ANALYSISFORECAST_WAV_006_017", r"cmems_mod_med_wav_anfc_[\d.]+km_PT1H-i"),
         "sst": (["cmems_mod_med_phy-temp_anfc_4.2km-2D_PT1H-m", "cmems_mod_med_phy-tem_anfc_4.2km-2D_PT1H-m"], ["thetao"],
                 "MEDSEA_ANALYSISFORECAST_PHY_006_013", r"cmems_mod_med_phy-tem\w*_anfc_[\d.]+km-2D_PT1H-m"),
+        "tide": TIDE,
+        "cur": (["cmems_mod_med_phy-cur_anfc_4.2km-2D_PT1H-m"], ["uo", "vo"],
+                "MEDSEA_ANALYSISFORECAST_PHY_006_013", r"cmems_mod_med_phy-cur_anfc_[\d.]+km-2D_PT1H-m"),
     },
     # Global (1/12 deg) for Eilat / Gulf of Aqaba.
     "eilat": {
@@ -44,9 +50,18 @@ DATASETS = {
                   "GLOBAL_ANALYSISFORECAST_WAV_001_027", r"cmems_mod_glo_wav_anfc_[\d.]+deg_PT3H-i"),
         "sst": (["cmems_mod_glo_phy_anfc_0.083deg_PT1H-m"], ["thetao"],
                 "GLOBAL_ANALYSISFORECAST_PHY_001_024", r"cmems_mod_glo_phy\w*_anfc_[\d.]+deg_PT1H-m"),
+        "tide": TIDE,
+        "cur": (["cmems_mod_glo_phy_anfc_merged-uv_PT1H-i"], ["utotal", "vtotal"],
+                "GLOBAL_ANALYSISFORECAST_PHY_001_024", r"cmems_mod_glo_phy_anfc_merged-uv_PT1H-i"),
     },
 }
-OUT_KEYS = {"VHM0": "wave", "VMDR": "waveDir", "VTM10": "wavePer", "VHM0_SW1": "swell", "VTM01_SW1": "swellPer", "thetao": "sst"}
+OUT_KEYS = {"VHM0": "wave", "VMDR": "waveDir", "VTM10": "wavePer", "VHM0_SW1": "swell", "VTM01_SW1": "swellPer",
+            "VMDR_SW1": "swellDir", "thetao": "sst", "ocean_tide": "tide"}
+DIRECTIONS = {"waveDir", "swellDir"}
+# Waves are read from 48 h back: "stir" = the biggest wave of the last 36 h tells the app whether
+# the water is still murky after a blow (water clarity).
+HISTORY_H = 48
+STIR_H = 36
 
 
 def beaches():
@@ -125,11 +140,35 @@ def open_first(candidates, variables, box, product, pattern):
     return None
 
 
+def to_hours(times):
+    return (times.astype("datetime64[s]").astype(np.int64) / 3600.0)
+
+
+def interp(src_h, values, dst_h, direction=False):
+    """Values on the source times -> hourly output times. Never extrapolates (outside -> None)."""
+    v = np.asarray(values, dtype=float)
+    ok = ~np.isnan(v)
+    if ok.sum() < 2:
+        return [None] * len(dst_h)
+    x, v = src_h[ok], v[ok]
+    inside = (dst_h >= x[0]) & (dst_h <= x[-1])
+    if direction:  # 350 -> 10 must not swing through 180
+        r = np.radians(v)
+        out = (np.degrees(np.arctan2(np.interp(dst_h, x, np.sin(r)), np.interp(dst_h, x, np.cos(r)))) + 360) % 360
+        return [int(round(o)) if i else None for o, i in zip(out, inside)]
+    out = np.interp(dst_h, x, v)
+    return [clean(o) if i else None for o, i in zip(out, inside)]
+
+
 def main(out_path: str):
     pts = beaches()
     start = datetime.now(timezone.utc).replace(minute=0, second=0, microsecond=0)
     end = start + timedelta(days=DAYS)
-    result = {"generatedAt": start.isoformat(), "source": "E.U. Copernicus Marine Service Information", "points": {}}
+    hours = [start + timedelta(hours=i) for i in range(DAYS * 24 + 1)]
+    dst_h = np.array([h.timestamp() / 3600.0 for h in hours])
+    result = {"generatedAt": start.isoformat(), "source": "E.U. Copernicus Marine Service Information",
+              "t": [h.strftime("%Y-%m-%dT%H:%MZ") for h in hours], "points": {}}
+    got = set()
 
     for region, sets in DATASETS.items():
         group = [p for p in pts if p["water"] == region]
@@ -137,39 +176,53 @@ def main(out_path: str):
             continue
         lats = [p["lat"] for p in group]
         lons = [p["lon"] for p in group]
-        box = dict(minimum_latitude=min(lats) - 0.3, maximum_latitude=max(lats) + 0.3,
-                   minimum_longitude=min(lons) - 0.3, maximum_longitude=max(lons) + 0.3,
-                   start_datetime=start.isoformat(), end_datetime=end.isoformat())
         for kind, (candidates, variables, product, pattern) in sets.items():
-            ds = open_first(candidates, variables, box, product, pattern)
+            t0 = start - timedelta(hours=HISTORY_H) if kind == "waves" else start
+            box = dict(minimum_latitude=min(lats) - 0.3, maximum_latitude=max(lats) + 0.3,
+                       minimum_longitude=min(lons) - 0.3, maximum_longitude=max(lons) + 0.3,
+                       start_datetime=t0.isoformat(), end_datetime=end.isoformat())
+            try:
+                ds = open_first(candidates, variables, box, product, pattern)
+            except Exception as e:  # noqa: BLE001
+                if is_auth_error(e) or kind in ("waves", "sst"):
+                    raise
+                print(f"{region}/{kind} skipped: {type(e).__name__}: {str(e)[:200]}")
+                continue
             if ds is None:
+                print(f"{region}/{kind}: no dataset available")
                 continue
             if "depth" in ds.dims:
                 ds = ds.isel(depth=0)
-            times = [np.datetime_as_string(t, unit="m") + "Z" for t in ds["time"].values]
+            src_h = to_hours(ds["time"].values)
             for p in group:
                 # Nearest *sea* cell (coastal points often fall on land-masked cells, e.g. the
                 # narrow tip of the Gulf of Aqaba): search all cells that have data, within ~35 km.
                 cell = nearest_sea(ds, variables[0], p["lat"], p["lon"])
                 if cell is None:
-                    print(f"no sea cell near {p['id']}")
+                    print(f"no sea cell near {p['id']} ({kind})")
                     continue
                 entry = result["points"].setdefault(p["id"], {})
-                entry[f"t_{kind}"] = times
-                for v in variables:
-                    entry[OUT_KEYS[v]] = [clean(x) for x in cell[v].values]
+                got.add(kind)
+                if kind == "cur":
+                    u, v = (cell[variables[0]].values, cell[variables[1]].values)
+                    entry["cur"] = interp(src_h, np.hypot(u, v), dst_h)
+                    # Direction the water flows TOWARDS (oceanographic convention).
+                    entry["curDir"] = interp(src_h, (np.degrees(np.arctan2(u, v)) + 360) % 360, dst_h, direction=True)
+                    continue
+                for var in variables:
+                    key = OUT_KEYS[var]
+                    entry[key] = interp(src_h, cell[var].values, dst_h, direction=key in DIRECTIONS)
+                if kind == "waves":
+                    w = np.asarray(cell["VHM0"].values, dtype=float)
+                    stir = []
+                    for h in dst_h:
+                        m = (src_h <= h) & (src_h > h - STIR_H) & ~np.isnan(w)
+                        stir.append(clean(w[m].max()) if m.any() else None)
+                    entry["stir"] = stir
 
-    # Waves and SST may have different time steps: keep the wave times as the main axis and
-    # put SST on its own axis only if it differs (the app resamples anyway).
-    for e in result["points"].values():
-        e["t"] = e.pop("t_waves", e.get("t_sst", []))
-        t_sst = e.pop("t_sst", None)
-        if t_sst and t_sst != e["t"] and "sst" in e:
-            lookup = dict(zip(t_sst, e["sst"]))
-            e["sst"] = [lookup.get(t) for t in e["t"]]
-
-    if not result["points"]:
+    if not result["points"] or "waves" not in got:
         sys.exit("no marine data retrieved")
+    print(f"kinds retrieved: {sorted(got)}")
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     Path(out_path).write_text(json.dumps(result, separators=(",", ":")), encoding="utf8")
     print(f"wrote {out_path}: {len(result['points'])} beaches")

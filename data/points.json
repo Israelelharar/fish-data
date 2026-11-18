@@ -18,6 +18,12 @@
   "lon": 35.0582
  },
  {
+  "id": "galei-galil",
+  "water": "med",
+  "lat": 33.018,
+  "lon": 35.0612
+ },
+ {
   "id": "shavei-zion",
   "water": "med",
   "lat": 32.984,
@@ -28,6 +34,12 @@
   "water": "med",
   "lat": 32.9094,
   "lon": 35.039
+ },
+ {
+  "id": "akko-argaman",
+  "water": "med",
+  "lat": 32.9065,
+  "lon": 35.0522
  },
  {
   "id": "kiryat-yam",
@@ -54,6 +66,12 @@
   "lon": 34.9273
  },
  {
+  "id": "haifa-carmel",
+  "water": "med",
+  "lat": 32.79,
+  "lon": 34.9253
+ },
+ {
   "id": "atlit",
   "water": "med",
   "lat": 32.7022,
@@ -78,6 +96,12 @@
   "lon": 34.8863
  },
  {
+  "id": "maagan-michael",
+  "water": "med",
+  "lat": 32.5582,
+  "lon": 34.8755
+ },
+ {
   "id": "jisr",
   "water": "med",
   "lat": 32.5392,
@@ -94,6 +118,12 @@
   "water": "med",
   "lat": 32.5063,
   "lon": 34.8618
+ },
+ {
+  "id": "sdot-yam",
+  "water": "med",
+  "lat": 32.4943,
+  "lon": 34.8578
  },
  {
   "id": "hadera-olga",
@@ -142,6 +172,24 @@
   "water": "med",
   "lat": 32.1945,
   "lon": 34.7755
+ },
+ {
+  "id": "herzliya-marina",
+  "water": "med",
+  "lat": 32.1695,
+  "lon": 34.7655
+ },
+ {
+  "id": "tel-baruch",
+  "water": "med",
+  "lat": 32.1295,
+  "lon": 34.7575
+ },
+ {
+  "id": "tlv-reading",
+  "water": "med",
+  "lat": 32.1085,
+  "lon": 34.7465
  },
  {
   "id": "tlv-port",
@@ -204,6 +252,12 @@
   "lon": 34.6004
  },
  {
+  "id": "ashkelon-bar-kochba",
+  "water": "med",
+  "lat": 31.7046,
+  "lon": 34.5354
+ },
+ {
   "id": "nitzanim",
   "water": "med",
   "lat": 31.7456,
@@ -244,6 +298,12 @@
   "water": "eilat",
   "lat": 29.537,
   "lon": 34.958
+ },
+ {
+  "id": "eilat-dekel",
+  "water": "eilat",
+  "lat": 29.529,
+  "lon": 34.9596
  },
  {
   "id": "eilat-katza",

@@ -15,6 +15,11 @@
   "lon": 35.088
  },
  {
+  "id": "galei-galil",
+  "lat": 33.018,
+  "lon": 35.091
+ },
+ {
   "id": "shavei-zion",
   "lat": 32.984,
   "lon": 35.08
@@ -23,6 +28,11 @@
   "id": "akko-walls",
   "lat": 32.92,
   "lon": 35.066
+ },
+ {
+  "id": "akko-argaman",
+  "lat": 32.913,
+  "lon": 35.081
  },
  {
   "id": "kiryat-yam",
@@ -45,6 +55,11 @@
   "lon": 34.957
  },
  {
+  "id": "haifa-carmel",
+  "lat": 32.79,
+  "lon": 34.955
+ },
+ {
   "id": "atlit",
   "lat": 32.7,
   "lon": 34.933
@@ -65,6 +80,11 @@
   "lon": 34.916
  },
  {
+  "id": "maagan-michael",
+  "lat": 32.556,
+  "lon": 34.905
+ },
+ {
   "id": "jisr",
   "lat": 32.537,
   "lon": 34.901
@@ -78,6 +98,11 @@
   "id": "caesarea-port",
   "lat": 32.502,
   "lon": 34.891
+ },
+ {
+  "id": "sdot-yam",
+  "lat": 32.49,
+  "lon": 34.887
  },
  {
   "id": "hadera-olga",
@@ -118,6 +143,21 @@
   "id": "herzliya-sidna-ali",
   "lat": 32.188,
   "lon": 34.804
+ },
+ {
+  "id": "herzliya-marina",
+  "lat": 32.163,
+  "lon": 34.794
+ },
+ {
+  "id": "tel-baruch",
+  "lat": 32.123,
+  "lon": 34.786
+ },
+ {
+  "id": "tlv-reading",
+  "lat": 32.102,
+  "lon": 34.775
  },
  {
   "id": "tlv-port",
@@ -170,6 +210,11 @@
   "lon": 34.628
  },
  {
+  "id": "ashkelon-bar-kochba",
+  "lat": 31.694,
+  "lon": 34.562
+ },
+ {
   "id": "nitzanim",
   "lat": 31.735,
   "lon": 34.6
@@ -205,6 +250,11 @@
   "lon": 34.958
  },
  {
+  "id": "eilat-dekel",
+  "lat": 29.542,
+  "lon": 34.951
+ },
+ {
   "id": "eilat-katza",
   "lat": 29.53,
   "lon": 34.938
@@ -233,6 +283,16 @@
   "id": "kursi",
   "lat": 32.825,
   "lon": 35.65
+ },
+ {
+  "id": "kinneret-tzinbari",
+  "lat": 32.765,
+  "lon": 35.563
+ },
+ {
+  "id": "kinneret-amnon",
+  "lat": 32.892,
+  "lon": 35.598
  },
  {
   "id": "ginosar",
