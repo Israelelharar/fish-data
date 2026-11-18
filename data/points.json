@@ -1,0 +1,260 @@
+[
+ {
+  "id": "rosh-hanikra",
+  "water": "med",
+  "lat": 33.0925,
+  "lon": 35.0737
+ },
+ {
+  "id": "achziv",
+  "water": "med",
+  "lat": 33.048,
+  "lon": 35.0702
+ },
+ {
+  "id": "nahariya",
+  "water": "med",
+  "lat": 33.009,
+  "lon": 35.0582
+ },
+ {
+  "id": "shavei-zion",
+  "water": "med",
+  "lat": 32.984,
+  "lon": 35.0502
+ },
+ {
+  "id": "akko-walls",
+  "water": "med",
+  "lat": 32.9094,
+  "lon": 35.039
+ },
+ {
+  "id": "kiryat-yam",
+  "water": "med",
+  "lat": 32.8645,
+  "lon": 35.0372
+ },
+ {
+  "id": "bat-galim",
+  "water": "med",
+  "lat": 32.8557,
+  "lon": 34.9651
+ },
+ {
+  "id": "shikmona",
+  "water": "med",
+  "lat": 32.8313,
+  "lon": 34.9267
+ },
+ {
+  "id": "dado",
+  "water": "med",
+  "lat": 32.806,
+  "lon": 34.9273
+ },
+ {
+  "id": "atlit",
+  "water": "med",
+  "lat": 32.7022,
+  "lon": 34.9034
+ },
+ {
+  "id": "neve-yam",
+  "water": "med",
+  "lat": 32.6822,
+  "lon": 34.9004
+ },
+ {
+  "id": "dor-habonim",
+  "water": "med",
+  "lat": 32.6402,
+  "lon": 34.8924
+ },
+ {
+  "id": "nahsholim",
+  "water": "med",
+  "lat": 32.618,
+  "lon": 34.8863
+ },
+ {
+  "id": "jisr",
+  "water": "med",
+  "lat": 32.5392,
+  "lon": 34.8715
+ },
+ {
+  "id": "caesarea-aqueduct",
+  "water": "med",
+  "lat": 32.5208,
+  "lon": 34.8663
+ },
+ {
+  "id": "caesarea-port",
+  "water": "med",
+  "lat": 32.5063,
+  "lon": 34.8618
+ },
+ {
+  "id": "hadera-olga",
+  "water": "med",
+  "lat": 32.4443,
+  "lon": 34.8448
+ },
+ {
+  "id": "hadera-power",
+  "water": "med",
+  "lat": 32.4763,
+  "lon": 34.8528
+ },
+ {
+  "id": "michmoret",
+  "water": "med",
+  "lat": 32.4093,
+  "lon": 34.8398
+ },
+ {
+  "id": "beit-yanai",
+  "water": "med",
+  "lat": 32.3923,
+  "lon": 34.8328
+ },
+ {
+  "id": "netanya",
+  "water": "med",
+  "lat": 32.3355,
+  "lon": 34.8214
+ },
+ {
+  "id": "poleg",
+  "water": "med",
+  "lat": 32.2765,
+  "lon": 34.8014
+ },
+ {
+  "id": "gaash",
+  "water": "med",
+  "lat": 32.2355,
+  "lon": 34.7915
+ },
+ {
+  "id": "herzliya-sidna-ali",
+  "water": "med",
+  "lat": 32.1945,
+  "lon": 34.7755
+ },
+ {
+  "id": "tlv-port",
+  "water": "med",
+  "lat": 32.1045,
+  "lon": 34.7435
+ },
+ {
+  "id": "tlv-hilton",
+  "water": "med",
+  "lat": 32.0945,
+  "lon": 34.7395
+ },
+ {
+  "id": "jaffa-port",
+  "water": "med",
+  "lat": 32.0573,
+  "lon": 34.721
+ },
+ {
+  "id": "bat-yam",
+  "water": "med",
+  "lat": 32.0243,
+  "lon": 34.711
+ },
+ {
+  "id": "rishon",
+  "water": "med",
+  "lat": 31.9893,
+  "lon": 34.704
+ },
+ {
+  "id": "palmachim",
+  "water": "med",
+  "lat": 31.9395,
+  "lon": 34.6685
+ },
+ {
+  "id": "yavne-yam",
+  "water": "med",
+  "lat": 31.9265,
+  "lon": 34.6645
+ },
+ {
+  "id": "ashdod-north",
+  "water": "med",
+  "lat": 31.8386,
+  "lon": 34.6143
+ },
+ {
+  "id": "ashdod-power",
+  "water": "med",
+  "lat": 31.8546,
+  "lon": 34.6243
+ },
+ {
+  "id": "ashdod-yod-alef",
+  "water": "med",
+  "lat": 31.7946,
+  "lon": 34.6004
+ },
+ {
+  "id": "nitzanim",
+  "water": "med",
+  "lat": 31.7456,
+  "lon": 34.5734
+ },
+ {
+  "id": "ashkelon-marina",
+  "water": "med",
+  "lat": 31.6936,
+  "lon": 34.5294
+ },
+ {
+  "id": "ashkelon-np",
+  "water": "med",
+  "lat": 31.6756,
+  "lon": 34.5184
+ },
+ {
+  "id": "ashkelon-rutenberg",
+  "water": "med",
+  "lat": 31.6386,
+  "lon": 34.5014
+ },
+ {
+  "id": "shikma",
+  "water": "med",
+  "lat": 31.6125,
+  "lon": 34.4846
+ },
+ {
+  "id": "zikim",
+  "water": "med",
+  "lat": 31.6195,
+  "lon": 34.4946
+ },
+ {
+  "id": "eilat-north",
+  "water": "eilat",
+  "lat": 29.537,
+  "lon": 34.958
+ },
+ {
+  "id": "eilat-katza",
+  "water": "eilat",
+  "lat": 29.5225,
+  "lon": 34.9529
+ },
+ {
+  "id": "eilat-coral",
+  "water": "eilat",
+  "lat": 29.5054,
+  "lon": 34.937
+ }
+]

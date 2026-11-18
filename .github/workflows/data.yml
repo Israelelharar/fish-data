@@ -1,0 +1,69 @@
+# Public data for the "דייג חכם" app. Process once, serve to everyone (free: public repo + GitHub Pages).
+#   rules.json     fishing rules with dates (the app picks up new seasons without an update)
+#   accuracy.json  daily check: forecast vs. real IMS station measurements
+#   sources.json   watchdog over the official sources (opens an issue if one changes)
+#   marine.json    waves / sea temperature from Copernicus Marine (once COPERNICUS_* secrets are set)
+name: data
+on:
+  schedule:
+    - cron: "17 */2 * * *" # every 2 hours, off the hour as data providers ask
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  issues: write
+concurrency:
+  group: data
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      HAS_COPERNICUS: ${{ secrets.COPERNICUS_USER != '' }}
+      BASE: https://israelelharar.github.io/fish-data
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: mkdir -p site && cp data/rules.json site/rules.json
+      - name: Accuracy check (forecast vs IMS stations)
+        continue-on-error: true
+        run: node scripts/verify-accuracy.mjs site/accuracy.json "$BASE/accuracy.json"
+      - name: Official sources watchdog
+        id: sources
+        continue-on-error: true
+        run: node scripts/check-sources.mjs site/sources.json "$BASE/sources.json"
+      - name: Open an issue if an official source changed
+        if: steps.sources.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue create --repo "${{ github.repository }}" --title "מקור רשמי השתנה: לבדוק את החוקים" --body-file site/changes.md
+      - uses: actions/setup-python@v5
+        if: env.HAS_COPERNICUS == 'true'
+        with:
+          python-version: "3.12"
+      - name: Sea state (Copernicus Marine)
+        if: env.HAS_COPERNICUS == 'true'
+        continue-on-error: true
+        run: |
+          pip install "copernicusmarine==2.*" xarray numpy
+          python scripts/copernicus_marine.py site/marine.json
+        env:
+          COPERNICUSMARINE_SERVICE_USERNAME: ${{ secrets.COPERNICUS_USER }}
+          COPERNICUSMARINE_SERVICE_PASSWORD: ${{ secrets.COPERNICUS_PASSWORD }}
+      - run: echo "{\"updated\":\"$(date -u +%FT%TZ)\"}" > site/health.json
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/deploy-pages@v4
