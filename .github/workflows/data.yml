@@ -12,7 +12,10 @@
 name: data
 on:
   schedule:
-    - cron: "17 */2 * * *" # every 2 hours, off the hour as data providers ask
+    # GitHub often skips scheduled runs (18.11.2026: none for 8 h). Several entries every hour raise the odds
+    # that at least one fires; `concurrency: data` queues overlaps, and the providers update hourly at most.
+    - cron: "17 * * * *"
+    - cron: "41 * * * *"
   workflow_dispatch:
   push:
     branches: [main]
