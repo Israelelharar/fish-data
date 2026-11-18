@@ -1,5 +1,5 @@
 """
-Builds marine.json (waves, swell, sea temperature, tide, currents, water stir; 7 days, hourly) for every sea beach
+Builds marine.json (waves, swell, sea temperature + its 24h/72h/7d change, bottom temperature, tide, currents, water stir; 7 days, hourly) for every sea beach
 from Copernicus Marine forecasts. Free for commercial use with the credit
 "E.U. Copernicus Marine Service Information".
 
@@ -43,6 +43,10 @@ DATASETS = {
         "tide": TIDE,
         "cur": (["cmems_mod_med_phy-cur_anfc_4.2km-2D_PT1H-m"], ["uo", "vo"],
                 "MEDSEA_ANALYSISFORECAST_PHY_006_013", r"cmems_mod_med_phy-cur_anfc_[\d.]+km-2D_PT1H-m"),
+
+        # Bottom potential temperature (hourly 2D temperature dataset). Extra: failure only drops it.
+        "bott": (["cmems_mod_med_phy-temp_anfc_4.2km-2D_PT1H-m", "cmems_mod_med_phy-tem_anfc_4.2km-2D_PT1H-m"], ["bottomT"],
+                 "MEDSEA_ANALYSISFORECAST_PHY_006_013", r"cmems_mod_med_phy-tem\w*_anfc_[\d.]+km-2D_PT1H-m"),
     },
     # Global (1/12 deg) for Eilat / Gulf of Aqaba.
     "eilat": {
@@ -53,15 +57,30 @@ DATASETS = {
         "tide": TIDE,
         "cur": (["cmems_mod_glo_phy_anfc_merged-uv_PT1H-i"], ["utotal", "vtotal"],
                 "GLOBAL_ANALYSISFORECAST_PHY_001_024", r"cmems_mod_glo_phy_anfc_merged-uv_PT1H-i"),
+
+        # Global bottom temperature is daily (interpolated to hours). Extra.
+        "bott": (["cmems_mod_glo_phy_anfc_0.083deg_P1D-m"], ["bottomT"],
+                 "GLOBAL_ANALYSISFORECAST_PHY_001_024", r"cmems_mod_glo_phy\w*_anfc_[\d.]+deg_P1D-m"),
     },
 }
 OUT_KEYS = {"VHM0": "wave", "VMDR": "waveDir", "VTM10": "wavePer", "VHM0_SW1": "swell", "VTM01_SW1": "swellPer",
-            "VMDR_SW1": "swellDir", "thetao": "sst", "ocean_tide": "tide"}
+            "VMDR_SW1": "swellDir", "thetao": "sst", "ocean_tide": "tide", "bottomT": "bott"}
 DIRECTIONS = {"waveDir", "swellDir"}
 # Waves are read from 48 h back: "stir" = the biggest wave of the last 36 h tells the app whether
 # the water is still murky after a blow (water clarity).
 HISTORY_H = 48
 STIR_H = 36
+# Sea temperature is read from 7 days back, for the change over 24 h / 72 h / 7 days ("sstD24" ...):
+# a sharp drop or rise matters to fish more than the absolute value alone.
+SST_HISTORY_H = 168
+SST_LAGS = {"sstD24": 24, "sstD72": 72, "sstD168": 168}
+
+
+def lagged_change(src_h, values, dst_h, lag_h):
+    """value(t) - value(t - lag) on the output hours. None where either side is outside the data."""
+    now = interp(src_h, values, dst_h)
+    before = interp(src_h, values, dst_h - lag_h)
+    return [None if a is None or b is None else clean(a - b) for a, b in zip(now, before)]
 
 
 def beaches():
@@ -177,7 +196,8 @@ def main(out_path: str):
         lats = [p["lat"] for p in group]
         lons = [p["lon"] for p in group]
         for kind, (candidates, variables, product, pattern) in sets.items():
-            t0 = start - timedelta(hours=HISTORY_H) if kind == "waves" else start
+            back = {"waves": HISTORY_H, "sst": SST_HISTORY_H, "bott": 24}.get(kind, 0)
+            t0 = start - timedelta(hours=back)
             box = dict(minimum_latitude=min(lats) - 0.3, maximum_latitude=max(lats) + 0.3,
                        minimum_longitude=min(lons) - 0.3, maximum_longitude=max(lons) + 0.3,
                        start_datetime=t0.isoformat(), end_datetime=end.isoformat())
@@ -212,6 +232,9 @@ def main(out_path: str):
                 for var in variables:
                     key = OUT_KEYS[var]
                     entry[key] = interp(src_h, cell[var].values, dst_h, direction=key in DIRECTIONS)
+                if kind == "sst":
+                    for key, lag in SST_LAGS.items():
+                        entry[key] = lagged_change(src_h, cell["thetao"].values, dst_h, lag)
                 if kind == "waves":
                     w = np.asarray(cell["VHM0"].values, dtype=float)
                     stir = []

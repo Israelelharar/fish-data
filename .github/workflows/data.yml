@@ -46,6 +46,8 @@ jobs:
       - name: Install Python packages (pinned)
         run: |
           for i in 1 2 3; do pip install -r requirements.txt && break; sleep 30; done
+      - name: Unit tests (maths only, no network)
+        run: python -m unittest discover -s tests
       - name: Is Copernicus configured?
         id: cop
         env:
