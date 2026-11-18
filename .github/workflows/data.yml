@@ -45,7 +45,7 @@ jobs:
           cache: pip
       - name: Start from the live files (last good data)
         run: node scripts/restore.mjs site
-      - run: cp data/rules.json site/rules.json && mkdir -p tmp
+      - run: cp data/rules.json site/rules.json && cp data/index.html site/index.html && mkdir -p tmp
       - name: Install Python packages (pinned)
         run: |
           for i in 1 2 3; do pip install -r requirements.txt && break; sleep 30; done
