@@ -45,8 +45,9 @@ DATASETS = {
                 "MEDSEA_ANALYSISFORECAST_PHY_006_013", r"cmems_mod_med_phy-cur_anfc_[\d.]+km-2D_PT1H-m"),
 
         # Bottom potential temperature (hourly 2D temperature dataset). Extra: failure only drops it.
-        "bott": (["cmems_mod_med_phy-temp_anfc_4.2km-2D_PT1H-m", "cmems_mod_med_phy-tem_anfc_4.2km-2D_PT1H-m"], ["bottomT"],
-                 "MEDSEA_ANALYSISFORECAST_PHY_006_013", r"cmems_mod_med_phy-tem\w*_anfc_[\d.]+km-2D_PT1H-m"),
+        # (only the 3D hourly dataset carries bottomT; we request just that 2D variable). Verified in STAC 2026-11-18.
+        "bott": (["cmems_mod_med_phy-temp_anfc_4.2km-3D_PT1H-m", "cmems_mod_med_phy-tem_anfc_4.2km-3D_PT1H-m"], ["bottomT"],
+                 "MEDSEA_ANALYSISFORECAST_PHY_006_013", r"cmems_mod_med_phy-tem\w*_anfc_[\d.]+km-3D_PT1H-m"),
     },
     # Global (1/12 deg) for Eilat / Gulf of Aqaba.
     "eilat": {
@@ -59,12 +60,13 @@ DATASETS = {
                 "GLOBAL_ANALYSISFORECAST_PHY_001_024", r"cmems_mod_glo_phy_anfc_merged-uv_PT1H-i"),
 
         # Global bottom temperature is daily (interpolated to hours). Extra.
-        "bott": (["cmems_mod_glo_phy_anfc_0.083deg_P1D-m"], ["bottomT"],
+        # Global bottom temperature is "tob" in the daily dataset. Verified in STAC 2026-11-18.
+        "bott": (["cmems_mod_glo_phy_anfc_0.083deg_P1D-m"], ["tob"],
                  "GLOBAL_ANALYSISFORECAST_PHY_001_024", r"cmems_mod_glo_phy\w*_anfc_[\d.]+deg_P1D-m"),
     },
 }
 OUT_KEYS = {"VHM0": "wave", "VMDR": "waveDir", "VTM10": "wavePer", "VHM0_SW1": "swell", "VTM01_SW1": "swellPer",
-            "VMDR_SW1": "swellDir", "thetao": "sst", "ocean_tide": "tide", "bottomT": "bott"}
+            "VMDR_SW1": "swellDir", "thetao": "sst", "ocean_tide": "tide", "bottomT": "bott", "tob": "bott"}
 DIRECTIONS = {"waveDir", "swellDir"}
 # Waves are read from 48 h back: "stir" = the biggest wave of the last 36 h tells the app whether
 # the water is still murky after a blow (water clarity).
