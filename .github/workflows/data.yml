@@ -62,7 +62,8 @@ jobs:
           COPERNICUSMARINE_SERVICE_USERNAME: ${{ secrets.COPERNICUS_USER }}
           COPERNICUSMARINE_SERVICE_PASSWORD: ${{ secrets.COPERNICUS_PASSWORD }}
       - name: Health file
-        run: node -e "require('fs').writeFileSync('site/health.json', JSON.stringify({ updated: new Date().toISOString() }))"
+        run: |
+          node -e "require('fs').writeFileSync('site/health.json', JSON.stringify({ updated: new Date().toISOString() }))"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
