@@ -12,16 +12,16 @@
   "lon": 35.0702
  },
  {
-  "id": "nahariya",
-  "water": "med",
-  "lat": 33.009,
-  "lon": 35.0582
- },
- {
   "id": "galei-galil",
   "water": "med",
   "lat": 33.018,
   "lon": 35.0612
+ },
+ {
+  "id": "nahariya",
+  "water": "med",
+  "lat": 33.009,
+  "lon": 35.0582
  },
  {
   "id": "shavei-zion",
@@ -84,6 +84,12 @@
   "lon": 34.9004
  },
  {
+  "id": "habonim-beach",
+  "water": "med",
+  "lat": 32.6588,
+  "lon": 34.8966
+ },
+ {
   "id": "dor-habonim",
   "water": "med",
   "lat": 32.6402,
@@ -94,6 +100,18 @@
   "water": "med",
   "lat": 32.618,
   "lon": 34.8863
+ },
+ {
+  "id": "dor-beach",
+  "water": "med",
+  "lat": 32.6056,
+  "lon": 34.8875
+ },
+ {
+  "id": "maayan-zvi",
+  "water": "med",
+  "lat": 32.582,
+  "lon": 34.8839
  },
  {
   "id": "maagan-michael",
@@ -126,16 +144,16 @@
   "lon": 34.8578
  },
  {
-  "id": "hadera-olga",
-  "water": "med",
-  "lat": 32.4443,
-  "lon": 34.8448
- },
- {
   "id": "hadera-power",
   "water": "med",
   "lat": 32.4763,
   "lon": 34.8528
+ },
+ {
+  "id": "hadera-olga",
+  "water": "med",
+  "lat": 32.4443,
+  "lon": 34.8448
  },
  {
   "id": "michmoret",
@@ -150,10 +168,28 @@
   "lon": 34.8328
  },
  {
+  "id": "ein-hatchelet",
+  "water": "med",
+  "lat": 32.3702,
+  "lon": 34.8284
+ },
+ {
+  "id": "kiryat-sanz",
+  "water": "med",
+  "lat": 32.3521,
+  "lon": 34.8245
+ },
+ {
   "id": "netanya",
   "water": "med",
   "lat": 32.3355,
   "lon": 34.8214
+ },
+ {
+  "id": "netanya-argaman",
+  "water": "med",
+  "lat": 32.3087,
+  "lon": 34.8127
  },
  {
   "id": "poleg",
@@ -180,6 +216,12 @@
   "lon": 34.7655
  },
  {
+  "id": "hatzuk",
+  "water": "med",
+  "lat": 32.1466,
+  "lon": 34.761
+ },
+ {
   "id": "tel-baruch",
   "water": "med",
   "lat": 32.1295,
@@ -204,16 +246,64 @@
   "lon": 34.7395
  },
  {
+  "id": "tlv-jerusalem",
+  "water": "med",
+  "lat": 32.079,
+  "lon": 34.7356
+ },
+ {
+  "id": "tlv-geula",
+  "water": "med",
+  "lat": 32.0764,
+  "lon": 34.7347
+ },
+ {
+  "id": "tlv-aviv",
+  "water": "med",
+  "lat": 32.0739,
+  "lon": 34.7335
+ },
+ {
   "id": "jaffa-port",
   "water": "med",
   "lat": 32.0573,
   "lon": 34.721
  },
  {
+  "id": "givat-aliya",
+  "water": "med",
+  "lat": 32.041,
+  "lon": 34.7155
+ },
+ {
+  "id": "batyam-sea-palace",
+  "water": "med",
+  "lat": 32.0353,
+  "lon": 34.7123
+ },
+ {
   "id": "bat-yam",
   "water": "med",
   "lat": 32.0243,
   "lon": 34.711
+ },
+ {
+  "id": "batyam-separate",
+  "water": "med",
+  "lat": 32.014,
+  "lon": 34.7065
+ },
+ {
+  "id": "batyam-tayo",
+  "water": "med",
+  "lat": 32.0117,
+  "lon": 34.7057
+ },
+ {
+  "id": "rishon-beach",
+  "water": "med",
+  "lat": 32.0057,
+  "lon": 34.7048
  },
  {
   "id": "rishon",
@@ -234,16 +324,34 @@
   "lon": 34.6645
  },
  {
+  "id": "ashdod-power",
+  "water": "med",
+  "lat": 31.8546,
+  "lon": 34.6243
+ },
+ {
   "id": "ashdod-north",
   "water": "med",
   "lat": 31.8386,
   "lon": 34.6143
  },
  {
-  "id": "ashdod-power",
+  "id": "ashdod-lido",
   "water": "med",
-  "lat": 31.8546,
-  "lon": 34.6243
+  "lat": 31.8166,
+  "lon": 34.6089
+ },
+ {
+  "id": "ashdod-oranim",
+  "water": "med",
+  "lat": 31.814,
+  "lon": 34.6075
+ },
+ {
+  "id": "ashdod-kshatot",
+  "water": "med",
+  "lat": 31.809,
+  "lon": 34.6049
  },
  {
   "id": "ashdod-yod-alef",
@@ -252,16 +360,22 @@
   "lon": 34.6004
  },
  {
-  "id": "ashkelon-bar-kochba",
+  "id": "ashdod-riviera",
   "water": "med",
-  "lat": 31.7046,
-  "lon": 34.5354
+  "lat": 31.7818,
+  "lon": 34.5895
  },
  {
   "id": "nitzanim",
   "water": "med",
   "lat": 31.7456,
   "lon": 34.5734
+ },
+ {
+  "id": "ashkelon-bar-kochba",
+  "water": "med",
+  "lat": 31.7046,
+  "lon": 34.5354
  },
  {
   "id": "ashkelon-marina",
@@ -282,22 +396,28 @@
   "lon": 34.5014
  },
  {
-  "id": "shikma",
-  "water": "med",
-  "lat": 31.6125,
-  "lon": 34.4846
- },
- {
   "id": "zikim",
   "water": "med",
   "lat": 31.625,
   "lon": 34.4789
  },
  {
+  "id": "shikma",
+  "water": "med",
+  "lat": 31.6125,
+  "lon": 34.4846
+ },
+ {
   "id": "eilat-north",
   "water": "eilat",
   "lat": 29.537,
   "lon": 34.958
+ },
+ {
+  "id": "eilat-sun-bay",
+  "water": "eilat",
+  "lat": 29.5311,
+  "lon": 34.9702
  },
  {
   "id": "eilat-dekel",
@@ -316,5 +436,17 @@
   "water": "eilat",
   "lat": 29.5054,
   "lon": 34.937
+ },
+ {
+  "id": "eilat-lighthouse",
+  "water": "eilat",
+  "lat": 29.4959,
+  "lon": 34.9295
+ },
+ {
+  "id": "eilat-princess",
+  "water": "eilat",
+  "lat": 29.4935,
+  "lon": 34.9259
  }
 ]
