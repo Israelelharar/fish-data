@@ -10,6 +10,11 @@
   "lon": 35.1
  },
  {
+  "id": "blue-lagoon",
+  "lat": 33.04217,
+  "lon": 35.09792
+ },
+ {
   "id": "galei-galil",
   "lat": 33.018,
   "lon": 35.091
@@ -25,14 +30,24 @@
   "lon": 35.08
  },
  {
+  "id": "akko-lagoon",
+  "lat": 32.9445,
+  "lon": 35.07372
+ },
+ {
+  "id": "akko-horses",
+  "lat": 32.9216,
+  "lon": 35.07231
+ },
+ {
   "id": "akko-walls",
   "lat": 32.92,
   "lon": 35.066
  },
  {
   "id": "akko-argaman",
-  "lat": 32.913,
-  "lon": 35.081
+  "lat": 32.91843,
+  "lon": 35.07885
  },
  {
   "id": "kiryat-yam",
@@ -45,19 +60,34 @@
   "lon": 34.98
  },
  {
+  "id": "haifa-quiet",
+  "lat": 32.83257,
+  "lon": 34.98946
+ },
+ {
   "id": "shikmona",
   "lat": 32.827,
   "lon": 34.956
  },
  {
+  "id": "haifa-zamir",
+  "lat": 32.79912,
+  "lon": 34.95607
+ },
+ {
   "id": "dado",
-  "lat": 32.806,
-  "lon": 34.957
+  "lat": 32.79692,
+  "lon": 34.95555
  },
  {
   "id": "haifa-carmel",
   "lat": 32.79,
   "lon": 34.955
+ },
+ {
+  "id": "atlit-beach",
+  "lat": 32.70831,
+  "lon": 34.94094
  },
  {
   "id": "atlit",
@@ -130,14 +160,19 @@
   "lon": 34.874
  },
  {
+  "id": "michmoret-kushi",
+  "lat": 32.41121,
+  "lon": 34.86944
+ },
+ {
   "id": "michmoret",
   "lat": 32.405,
   "lon": 34.869
  },
  {
   "id": "beit-yanai",
-  "lat": 32.388,
-  "lon": 34.862
+  "lat": 32.39268,
+  "lon": 34.86574
  },
  {
   "id": "ein-hatchelet",
@@ -150,9 +185,24 @@
   "lon": 34.85309
  },
  {
+  "id": "netanya-onot",
+  "lat": 32.33832,
+  "lon": 34.85123
+ },
+ {
+  "id": "netanya-amphi",
+  "lat": 32.3347,
+  "lon": 34.85016
+ },
+ {
   "id": "netanya",
   "lat": 32.329,
   "lon": 34.85
+ },
+ {
+  "id": "netanya-fishing-south",
+  "lat": 32.31507,
+  "lon": 34.84801
  },
  {
   "id": "netanya-argaman",
@@ -161,13 +211,23 @@
  },
  {
   "id": "poleg",
-  "lat": 32.27,
-  "lon": 34.83
+  "lat": 32.27539,
+  "lon": 34.83329
+ },
+ {
+  "id": "gaash-volcano",
+  "lat": 32.24782,
+  "lon": 34.82528
  },
  {
   "id": "gaash",
   "lat": 32.229,
   "lon": 34.82
+ },
+ {
+  "id": "shefayim",
+  "lat": 32.21613,
+  "lon": 34.81457
  },
  {
   "id": "herzliya-sidna-ali",
@@ -180,14 +240,34 @@
   "lon": 34.794
  },
  {
+  "id": "herzliya-stars",
+  "lat": 32.15703,
+  "lon": 34.79526
+ },
+ {
+  "id": "herzliya-separate",
+  "lat": 32.15269,
+  "lon": 34.79387
+ },
+ {
   "id": "hatzuk",
   "lat": 32.14015,
   "lon": 34.78949
  },
  {
+  "id": "tlv-pirtza",
+  "lat": 32.12943,
+  "lon": 34.78575
+ },
+ {
   "id": "tel-baruch",
   "lat": 32.123,
   "lon": 34.786
+ },
+ {
+  "id": "tlv-dogs-north",
+  "lat": 32.11446,
+  "lon": 34.7797
  },
  {
   "id": "tlv-reading",
@@ -205,6 +285,11 @@
   "lon": 34.768
  },
  {
+  "id": "tlv-frishman",
+  "lat": 32.08055,
+  "lon": 34.76665
+ },
+ {
   "id": "tlv-jerusalem",
   "lat": 32.0747,
   "lon": 34.76467
@@ -218,6 +303,16 @@
   "id": "tlv-aviv",
   "lat": 32.0696,
   "lon": 34.76255
+ },
+ {
+  "id": "tlv-charles-clore",
+  "lat": 32.06032,
+  "lon": 34.75869
+ },
+ {
+  "id": "jaffa-beach",
+  "lat": 32.05696,
+  "lon": 34.75604
  },
  {
   "id": "jaffa-port",
@@ -253,6 +348,11 @@
   "id": "rishon-beach",
   "lat": 32.00138,
   "lon": 34.73385
+ },
+ {
+  "id": "rishon-separate",
+  "lat": 31.99521,
+  "lon": 34.73012
  },
  {
   "id": "rishon",
@@ -295,6 +395,16 @@
   "lon": 34.6325
  },
  {
+  "id": "ashdod-marina",
+  "lat": 31.79568,
+  "lon": 34.62745
+ },
+ {
+  "id": "ashdod-gil",
+  "lat": 31.79172,
+  "lon": 34.62764
+ },
+ {
   "id": "ashdod-yod-alef",
   "lat": 31.786,
   "lon": 34.628
@@ -303,6 +413,11 @@
   "id": "ashdod-riviera",
   "lat": 31.77324,
   "lon": 34.61711
+ },
+ {
+  "id": "nitzanim-beach",
+  "lat": 31.74477,
+  "lon": 34.59984
  },
  {
   "id": "nitzanim",
@@ -345,6 +460,11 @@
   "lon": 34.958
  },
  {
+  "id": "eilat-royal",
+  "lat": 29.54837,
+  "lon": 34.96335
+ },
+ {
   "id": "eilat-sun-bay",
   "lat": 29.54611,
   "lon": 34.97017
@@ -356,8 +476,8 @@
  },
  {
   "id": "eilat-katza",
-  "lat": 29.53,
-  "lon": 34.938
+  "lat": 29.52448,
+  "lon": 34.93399
  },
  {
   "id": "eilat-coral",
@@ -415,6 +535,11 @@
   "lon": 35.5317
  },
  {
+  "id": "susita",
+  "lat": 32.79085,
+  "lon": 35.64022
+ },
+ {
   "id": "tiberias",
   "lat": 32.79,
   "lon": 35.542
@@ -423,6 +548,11 @@
   "id": "ein-gev",
   "lat": 32.784,
   "lon": 35.64
+ },
+ {
+  "id": "tiberias-rimonim",
+  "lat": 32.78391,
+  "lon": 35.5443
  },
  {
   "id": "tiberias-guy",

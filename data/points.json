@@ -12,6 +12,12 @@
   "lon": 35.0702
  },
  {
+  "id": "blue-lagoon",
+  "water": "med",
+  "lat": 33.0422,
+  "lon": 35.0681
+ },
+ {
   "id": "galei-galil",
   "water": "med",
   "lat": 33.018,
@@ -30,6 +36,18 @@
   "lon": 35.0502
  },
  {
+  "id": "akko-lagoon",
+  "water": "med",
+  "lat": 32.9339,
+  "lon": 35.0467
+ },
+ {
+  "id": "akko-horses",
+  "water": "med",
+  "lat": 32.911,
+  "lon": 35.0453
+ },
+ {
   "id": "akko-walls",
   "water": "med",
   "lat": 32.9094,
@@ -38,8 +56,8 @@
  {
   "id": "akko-argaman",
   "water": "med",
-  "lat": 32.9065,
-  "lon": 35.0522
+  "lat": 32.912,
+  "lon": 35.0501
  },
  {
   "id": "kiryat-yam",
@@ -54,22 +72,40 @@
   "lon": 34.9651
  },
  {
+  "id": "haifa-quiet",
+  "water": "med",
+  "lat": 32.8542,
+  "lon": 34.9746
+ },
+ {
   "id": "shikmona",
   "water": "med",
   "lat": 32.8313,
   "lon": 34.9267
  },
  {
+  "id": "haifa-zamir",
+  "water": "med",
+  "lat": 32.7991,
+  "lon": 34.9263
+ },
+ {
   "id": "dado",
   "water": "med",
-  "lat": 32.806,
-  "lon": 34.9273
+  "lat": 32.7969,
+  "lon": 34.9258
  },
  {
   "id": "haifa-carmel",
   "water": "med",
   "lat": 32.79,
   "lon": 34.9253
+ },
+ {
+  "id": "atlit-beach",
+  "water": "med",
+  "lat": 32.7105,
+  "lon": 34.9113
  },
  {
   "id": "atlit",
@@ -156,6 +192,12 @@
   "lon": 34.8448
  },
  {
+  "id": "michmoret-kushi",
+  "water": "med",
+  "lat": 32.4156,
+  "lon": 34.8403
+ },
+ {
   "id": "michmoret",
   "water": "med",
   "lat": 32.4093,
@@ -164,8 +206,8 @@
  {
   "id": "beit-yanai",
   "water": "med",
-  "lat": 32.3923,
-  "lon": 34.8328
+  "lat": 32.397,
+  "lon": 34.8366
  },
  {
   "id": "ein-hatchelet",
@@ -180,10 +222,28 @@
   "lon": 34.8245
  },
  {
+  "id": "netanya-onot",
+  "water": "med",
+  "lat": 32.3448,
+  "lon": 34.8226
+ },
+ {
+  "id": "netanya-amphi",
+  "water": "med",
+  "lat": 32.3412,
+  "lon": 34.8216
+ },
+ {
   "id": "netanya",
   "water": "med",
   "lat": 32.3355,
   "lon": 34.8214
+ },
+ {
+  "id": "netanya-fishing-south",
+  "water": "med",
+  "lat": 32.3215,
+  "lon": 34.8194
  },
  {
   "id": "netanya-argaman",
@@ -194,14 +254,26 @@
  {
   "id": "poleg",
   "water": "med",
-  "lat": 32.2765,
-  "lon": 34.8014
+  "lat": 32.2819,
+  "lon": 34.8047
+ },
+ {
+  "id": "gaash-volcano",
+  "water": "med",
+  "lat": 32.2543,
+  "lon": 34.7967
  },
  {
   "id": "gaash",
   "water": "med",
   "lat": 32.2355,
   "lon": 34.7915
+ },
+ {
+  "id": "shefayim",
+  "water": "med",
+  "lat": 32.2226,
+  "lon": 34.786
  },
  {
   "id": "herzliya-sidna-ali",
@@ -216,16 +288,40 @@
   "lon": 34.7655
  },
  {
+  "id": "herzliya-stars",
+  "water": "med",
+  "lat": 32.1635,
+  "lon": 34.7667
+ },
+ {
+  "id": "herzliya-separate",
+  "water": "med",
+  "lat": 32.1592,
+  "lon": 34.7653
+ },
+ {
   "id": "hatzuk",
   "water": "med",
   "lat": 32.1466,
   "lon": 34.761
  },
  {
+  "id": "tlv-pirtza",
+  "water": "med",
+  "lat": 32.1359,
+  "lon": 34.7572
+ },
+ {
   "id": "tel-baruch",
   "water": "med",
   "lat": 32.1295,
   "lon": 34.7575
+ },
+ {
+  "id": "tlv-dogs-north",
+  "water": "med",
+  "lat": 32.1209,
+  "lon": 34.7512
  },
  {
   "id": "tlv-reading",
@@ -246,6 +342,12 @@
   "lon": 34.7395
  },
  {
+  "id": "tlv-frishman",
+  "water": "med",
+  "lat": 32.0849,
+  "lon": 34.7376
+ },
+ {
   "id": "tlv-jerusalem",
   "water": "med",
   "lat": 32.079,
@@ -262,6 +364,18 @@
   "water": "med",
   "lat": 32.0739,
   "lon": 34.7335
+ },
+ {
+  "id": "tlv-charles-clore",
+  "water": "med",
+  "lat": 32.0647,
+  "lon": 34.7296
+ },
+ {
+  "id": "jaffa-beach",
+  "water": "med",
+  "lat": 32.0613,
+  "lon": 34.727
  },
  {
   "id": "jaffa-port",
@@ -304,6 +418,12 @@
   "water": "med",
   "lat": 32.0057,
   "lon": 34.7048
+ },
+ {
+  "id": "rishon-separate",
+  "water": "med",
+  "lat": 31.9996,
+  "lon": 34.7011
  },
  {
   "id": "rishon",
@@ -354,6 +474,18 @@
   "lon": 34.6049
  },
  {
+  "id": "ashdod-marina",
+  "water": "med",
+  "lat": 31.8042,
+  "lon": 34.5998
+ },
+ {
+  "id": "ashdod-gil",
+  "water": "med",
+  "lat": 31.8003,
+  "lon": 34.6
+ },
+ {
   "id": "ashdod-yod-alef",
   "water": "med",
   "lat": 31.7946,
@@ -364,6 +496,12 @@
   "water": "med",
   "lat": 31.7818,
   "lon": 34.5895
+ },
+ {
+  "id": "nitzanim-beach",
+  "water": "med",
+  "lat": 31.7553,
+  "lon": 34.5732
  },
  {
   "id": "nitzanim",
@@ -414,6 +552,12 @@
   "lon": 34.958
  },
  {
+  "id": "eilat-royal",
+  "water": "eilat",
+  "lat": 29.5334,
+  "lon": 34.9633
+ },
+ {
   "id": "eilat-sun-bay",
   "water": "eilat",
   "lat": 29.5311,
@@ -428,8 +572,8 @@
  {
   "id": "eilat-katza",
   "water": "eilat",
-  "lat": 29.5225,
-  "lon": 34.9529
+  "lat": 29.517,
+  "lon": 34.9489
  },
  {
   "id": "eilat-coral",
